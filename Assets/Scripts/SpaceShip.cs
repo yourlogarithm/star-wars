@@ -8,7 +8,6 @@ public class SpaceShip : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     
     [SerializeField] private float speed;
-    [Range(0, 1)]
     [SerializeField] private float acceleration;
     
     [Range(0, 0.25f)]
@@ -64,8 +63,18 @@ public class SpaceShip : MonoBehaviour
         Vector3 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
         _aimDirection = (mousePosition - transform.position).normalized;
+        Vector2 forward = _movementRotation * Vector2.up;
+        float angle = Vector2.Angle(forward, _aimDirection);
+        float fov = 90.0f;
+        if (angle > fov / 2)
+        {
+            float sign = (Vector3.Cross(forward, _aimDirection).z < 0) ? -1 : 1;
+            float edgeAngle = sign * fov / 2;
+            _aimDirection = Quaternion.Euler(0, 0, edgeAngle) * forward;
+        }
         _aimAngle = Mathf.Atan2(_aimDirection.y, _aimDirection.x) * Mathf.Rad2Deg - 90f;
         _aimRotation = Quaternion.Euler(0, 0, _aimAngle);
+        Debug.Log(_aimDirection);
         if (_isLocked)
             return;
         _movementDirection = _aimDirection;
@@ -90,11 +99,12 @@ public class SpaceShip : MonoBehaviour
     {
         if (_isOnBrake)
             _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, Vector2.zero, brakeDamping);
-        // else
-        //     _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, _movementDirection * speed, acceleration);
         else
-            _rigidbody2D.AddForce(_movementDirection * speed);
-        Debug.Log(_rigidbody2D.velocity);
+        {
+            _rigidbody2D.AddForce(_movementDirection * acceleration);
+            if (_rigidbody2D.velocity.magnitude > speed)
+                _rigidbody2D.velocity = Vector2.ClampMagnitude(_rigidbody2D.velocity, speed); 
+        }
     }
 
     private void Rotation()

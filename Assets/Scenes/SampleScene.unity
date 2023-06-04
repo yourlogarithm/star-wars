@@ -604,6 +604,14 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: test
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: speed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: maxSpeed
       value: 25
       objectReference: {fileID: 0}
@@ -611,6 +619,14 @@ PrefabInstance:
       propertyPath: crosshair
       value: 
       objectReference: {fileID: 860830604}
+    - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: acceleration
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: brakeDamping
+      value: 0.125
+      objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814998, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: m_Name
       value: Space Ship
