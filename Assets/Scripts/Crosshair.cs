@@ -16,7 +16,7 @@ public class Crosshair : MonoBehaviour
 
     void Update()
     {
-        transform.position = _pivot.transform.position + _pivot.AimDirection * _offset;
+        transform.position = _pivot.transform.position + ((Vector3)_pivot.AimDirection * _offset);
         transform.rotation = _pivot.AimRotation;
     }
 }

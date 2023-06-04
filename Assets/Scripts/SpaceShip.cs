@@ -11,6 +11,7 @@ public class SpaceShip : MonoBehaviour
     [Range(0, 1)]
     [SerializeField] private float acceleration;
     
+    [Range(0, 0.25f)]
     [SerializeField] private float brakeDamping;
     
     [SerializeField] private float shootingCooldown;
@@ -20,11 +21,14 @@ public class SpaceShip : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private Camera _camera;
 
-    private Vector3 _aimDirection;
-    private float _angle;
+    private Vector2 _aimDirection;
     private Quaternion _aimRotation;
+    private float _aimAngle;
+    private Vector2 _movementDirection;
+    private float _movementAngle;
+    private Quaternion _movementRotation;
     
-    public Vector3 AimDirection => _aimDirection;
+    public Vector2 AimDirection => _aimDirection;
     public Quaternion AimRotation => _aimRotation;
     
     private bool _isOnBrake;
@@ -39,24 +43,34 @@ public class SpaceShip : MonoBehaviour
 
     private void Update()
     {
+        if (test)
+            return;
         GetInputDirection();
         GetInputKeys();
     }
 
     private void FixedUpdate()
     {
+        if (test)
+            return;
         Movement();
         Rotation();
-        Brake();
+        Shoot();
     }
 
 
     private void GetInputDirection()
     {
         Vector3 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = 0;
         _aimDirection = (mousePosition - transform.position).normalized;
-        _angle = Mathf.Atan2(_aimDirection.y, _aimDirection.x) * Mathf.Rad2Deg - 90f;
-        _aimRotation = Quaternion.Euler(0, 0, _angle);
+        _aimAngle = Mathf.Atan2(_aimDirection.y, _aimDirection.x) * Mathf.Rad2Deg - 90f;
+        _aimRotation = Quaternion.Euler(0, 0, _aimAngle);
+        if (_isLocked)
+            return;
+        _movementDirection = _aimDirection;
+        _movementAngle = _aimAngle;
+        _movementRotation = _aimRotation;
     }
 
     private void GetInputKeys()
@@ -68,33 +82,33 @@ public class SpaceShip : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftShift))
             _isLocked = true;
+        else
+            _isLocked = false;
     }
 
     private void Movement()
     {
-        // _rigidbody2D.AddForce(_direction * (speed * Time.deltaTime));
-    }
-
-    private void Brake()
-    {
         if (_isOnBrake)
-            _rigidbody2D.AddForce(-brakeDamping * _rigidbody2D.velocity);
+            _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, Vector2.zero, brakeDamping);
+        // else
+        //     _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, _movementDirection * speed, acceleration);
+        else
+            _rigidbody2D.AddForce(_movementDirection * speed);
+        Debug.Log(_rigidbody2D.velocity);
     }
 
     private void Rotation()
     {
-        _rigidbody2D.rotation = Mathf.LerpAngle(_rigidbody2D.rotation, _angle, rotationSpeed * Time.deltaTime);
+        _rigidbody2D.rotation = Mathf.LerpAngle(_rigidbody2D.rotation, _movementAngle, rotationSpeed * Time.deltaTime);
     }
-    
 
-    //
-    // private void Shoot()
-    // {
-    //     if (Input.GetButton("Fire1") && Time.time > _lastShootTime)
-    //     {
-    //         Projectile projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
-    //         projectile.Launch(_aimDirection, _aimRotation);
-    //         _lastShootTime = Time.time + shootingCooldown;
-    //     }
-    // }
+    private void Shoot()
+    {
+        if (Input.GetButton("Fire1") && Time.time > _lastShootTime)
+        {
+            Projectile projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+            projectile.Launch(_aimDirection, _aimRotation);
+            _lastShootTime = Time.time + shootingCooldown;
+        }
+    }
 }
