@@ -293,7 +293,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 4c9c59693ebcc492ba90b0866a80fffe, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -489,13 +489,33 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814993, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: test
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: health
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814998, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: m_Name
       value: Space Ship (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814999, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814999, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814999, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: m_Color.r
+      value: 0.00965023
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
@@ -555,6 +575,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3811430288921005070, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.148
+      objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814992, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -604,12 +628,20 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: fov
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: test
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: speed
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
+      propertyPath: health
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: maxSpeed
@@ -625,7 +657,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814995, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: brakeDamping
-      value: 0.125
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 3811430288940814998, guid: 3c7f62e7adb104157ba7e301d5a821e6, type: 3}
       propertyPath: m_Name

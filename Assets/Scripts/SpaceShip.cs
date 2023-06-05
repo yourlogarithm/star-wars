@@ -1,23 +1,29 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpaceShip : MonoBehaviour
 {
     [SerializeField] private bool test;
+
+    [SerializeField] private float health;
+    [SerializeField] private float armor;
     
     [SerializeField] private float rotationSpeed;
     
     [SerializeField] private float speed;
     [SerializeField] private float acceleration;
     
-    [Range(0, 0.25f)]
+    [Range(0, 1f)]
     [SerializeField] private float brakeDamping;
-    
+
+    [SerializeField] private float fov;
     [SerializeField] private float shootingCooldown;
     [SerializeField] private Transform projectileSpawnPoint;
     [SerializeField] private Projectile projectilePrefab;
 
     private Rigidbody2D _rigidbody2D;
+    private SpriteRenderer _spriteRenderer;
     private Camera _camera;
 
     private Vector2 _aimDirection;
@@ -37,6 +43,7 @@ public class SpaceShip : MonoBehaviour
     private void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         _camera = Camera.main;
     }
 
@@ -57,7 +64,6 @@ public class SpaceShip : MonoBehaviour
         Shoot();
     }
 
-
     private void GetInputDirection()
     {
         Vector3 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
@@ -65,7 +71,6 @@ public class SpaceShip : MonoBehaviour
         _aimDirection = (mousePosition - transform.position).normalized;
         Vector2 forward = _movementRotation * Vector2.up;
         float angle = Vector2.Angle(forward, _aimDirection);
-        float fov = 90.0f;
         if (angle > fov / 2)
         {
             float sign = (Vector3.Cross(forward, _aimDirection).z < 0) ? -1 : 1;
@@ -74,7 +79,6 @@ public class SpaceShip : MonoBehaviour
         }
         _aimAngle = Mathf.Atan2(_aimDirection.y, _aimDirection.x) * Mathf.Rad2Deg - 90f;
         _aimRotation = Quaternion.Euler(0, 0, _aimAngle);
-        Debug.Log(_aimDirection);
         if (_isLocked)
             return;
         _movementDirection = _aimDirection;
@@ -98,7 +102,7 @@ public class SpaceShip : MonoBehaviour
     private void Movement()
     {
         if (_isOnBrake)
-            _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, Vector2.zero, brakeDamping);
+            _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, Vector2.zero, brakeDamping * 10 * Time.fixedDeltaTime);
         else
         {
             _rigidbody2D.AddForce(_movementDirection * acceleration);
@@ -117,8 +121,38 @@ public class SpaceShip : MonoBehaviour
         if (Input.GetButton("Fire1") && Time.time > _lastShootTime)
         {
             Projectile projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
-            projectile.Launch(_aimDirection, _aimRotation);
+            projectile.Launch(this, _aimDirection, _aimRotation);
             _lastShootTime = Time.time + shootingCooldown;
         }
+    }
+
+    public void TakeHit(float damage)
+    {
+        health -= damage;
+        StartCoroutine(FlashRed(damage));
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private IEnumerator<WaitForSeconds> FlashRed(float damage)
+    {
+        Color originalColor = _spriteRenderer.color;
+        Color redColor = new Color(1, 0, 0, Mathf.Min(damage / (health / 2), 1));
+        float flashDuration = 0.1f;
+        _spriteRenderer.color = redColor;
+        float elapsedTime = 0;
+        while (elapsedTime < flashDuration)
+        {
+            // calculate how far through the flash we are (between 0 and 1)
+            float lerpAmount = elapsedTime / flashDuration;
+            // blend towards the original color
+            _spriteRenderer.color = Color.Lerp(redColor, originalColor, lerpAmount);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        // revert back to the original color
+        _spriteRenderer.color = originalColor;
     }
 }
